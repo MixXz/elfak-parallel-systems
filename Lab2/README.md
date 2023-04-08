@@ -5,7 +5,7 @@
 - Vraća grupu procesa za zadati komunikator
 
 ```cpp
-MPI_Comm_group(MPI_Comm comm, MPI_Group *group);
+MPI_Comm_group(MPI_Comm comm, MPI_Group *group)
 ```
 
 ### MPI_Group_rank
@@ -26,23 +26,24 @@ MPI_Group_size(MPI_Group group, int *size)
 
 ### MPI_Group_excl
 
+- Skraćeno, kreira novu grupu od stare, samo izbaci određene članove...
 - Kreira se nova grupa tako što se iz stare grupe isključe procesi sa
   identifikatorima koji su definisani sa nonmembers, i kojih ima
-  count. Redosled procesa u novoj grupi prati redosled procesa
+  count.
+- Redosled procesa u novoj grupi prati redosled procesa
   u staroj grupi.
-- Skraćeno, kreira novu grupu od stare, samo izbaci određene članove...
 
 ```cpp
-MPI_Group_incl(MPI_Group oldGroup, int count, int *members, MPI_Group *newGroup)
+MPI_Group_excl(MPI_Group group, int count, int *nonmembers, MPI_Group *new_group)
 ```
 
 ### MPI_Group_incl
 
+- Skraćeno, kreira novu grupu sa odabranim procesima iz stare grupe...
 - Kreira se nova grupa tako što procesi sa identifikatorima iz stare
   grupe koji su definisani sa members čine novu grupu.
-  Procesa u novoj grupi ima count. Proces members[i] u novoj
-  grupi ima rang i.
-- Skraćeno, kreira novu grupu sa odabranim procesima iz stare grupe...
+- Procesa u novoj grupi ima count.
+- Proces members[i] u novoj grupi ima rang i.
 
 ```cpp
 MPI_Group_incl(MPI_Group oldGroup, int count, int *members, MPI_Group *newGroup)
@@ -76,7 +77,7 @@ MPI_Group_difference(MPI_Group group1, MPI_Group group2, MPI_Group *newGroup)
 
 ### MPI_Comm_create
 
-- Kreira novi komunikator, newComm, od procesa iz zadatke grupe, koji se nalaze u oldComm komunikatoru.
+- Kreira novi komunikator, newComm, od procesa iz zadate grupe, koji se nalaze u oldComm komunikatoru.
 
 ```cpp
 MPI_Comm_create(MPI_Comm oldComm, MPI_Group group, MPI_Comm *newComm)
@@ -91,3 +92,52 @@ MPI_Comm_create(MPI_Comm oldComm, MPI_Group group, MPI_Comm *newComm)
 ```cpp
 MPI_Comm_split(MPI_Comm oldComm, int color, int key, MPI_Comm *newComm)
 ```
+
+# Cartesian topologije
+
+### MPI_Cart_create
+
+- Za kreiranje Cartesian struktura proizvoljnog broja dimenzija.
+
+```cpp
+MPI_Cart_create(MPI_Comm oldComm, int nDims, int *dimSize, int *periods, int reorder MPI_Comm *commCart)
+```
+
+### MPI_Cart_coords
+
+- Preslikavanje ranka procesa u koordinate procesa.
+
+```cpp
+MPI_Cart_coords( MPI_Comm comm, int rank, int maxDims, int *coords )
+```
+
+### MPI_Cart_rank
+
+- Preslikavanje koordinate procesa u rank procesa.
+
+```cpp
+ MPI_Cart_rank (MPI_Comm comm, int *coords, int *rank)
+```
+
+### MPI_Cart_shift
+
+- Izračunava rankove susednih procesa, za proces koji je poziva. Ovi rankovi će biti iskorišćeni u pomeranju prilikom poziva funkcija za komunikaciju koji se
+  dešavaju nakon poziva ove funkcije.
+- Ako za neki proces sused nije definisan onda je povratna vrednost MPI_PROC_NULL.
+
+```cpp
+MPI_Cart_shift(MPI_Comm comm, int direction, int disp, int *rankSource, int *rankDest)
+```
+
+### MPI_Sendrecv
+
+- Kombinuje blokirajuće Send i Recv u jednu operaciju koja se odvija bez deadloka.
+- Proces koje je izvršava šalje max 1 poruku i
+  prima max 1 poruku.
+- Dest i source mogu biti različiti, ali i isti, po
+  potrebi.
+
+### MPI_Sendrecv_replace
+
+- Varijanta MPI_Sendrecv koja koristi isti bafer za slanje i primanje podataka.
+- Primljeni podaci u buf se kopiraju na mesta, odakle su poslati podaci iz buf.
