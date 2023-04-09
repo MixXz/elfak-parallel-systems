@@ -11,7 +11,6 @@
 //procesa u novom komunikatoru i stari identifikator procesa.
 
 int main(int argc, char** argv) {
-
     int rank, newRank, size;
     MPI_Group oldGroup, newGroup;
     MPI_Comm newComm;

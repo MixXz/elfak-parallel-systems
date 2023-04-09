@@ -10,7 +10,6 @@
 //elemenata primljene vrste matrice A manja od zadate vrednosti v.
 
 int main(int argc, char** argv) {
-
 	int rank, size;
 	MPI_Group worldGroup, newGroup;
 	MPI_Comm comm1;
