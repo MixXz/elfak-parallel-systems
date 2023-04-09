@@ -1,6 +1,5 @@
 #include <mpi.h>
 #include <stdio.h>
-#include <stdlib.h>
 #define N 4
 #define DIM_COUNT 2
 #define MASTER 0
