@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	MPI_Comm cartComm;
 	int cartRank,
 		dims[DIM_COUNT] = { N, M },
-		periods[DIM_COUNT] = { 0 , 1 },
+		periods[DIM_COUNT] = { 1 , 0 },
 		cartCoords[DIM_COUNT],
 		leftNeighbourRank,
 		rightNeighbourRank;
