@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 	MPI_Type_vector(N, K, N, MPI_INT, &colsType);
 	MPI_Type_commit(&rowsType);
 	MPI_Type_commit(&colsType);
-	
+
 	if (rank == MASTER) {
 		initMatrix(&a[0][0], N, N, 0);
 		initMatrix(&b[0][0], N, N, 0);

@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 	MPI_Scatter(&a[0][0], 1, resizedTempType, locA, l * N, MPI_INT, MASTER, MPI_COMM_WORLD);
 	MPI_Bcast(&b[0][0], N * M, MPI_INT, MASTER, MPI_COMM_WORLD);
 
-	for(int i = 0; i < l; i++)
+	for (int i = 0; i < l; i++)
 		for (int j = 0; j < M; j++)
 			for (int q = 0; q < N; q++)
 				locC[i * M + j] += locA[i * N + q] * b[q][j];
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 	printMatrix(&b[0][0], N, M, "locB:\n");
 	printMatrix(locC, l, M, "locC:\n");
 
-	if (rank == MASTER){
+	if (rank == MASTER) {
 		printMatrix(&a[0][0], K, N, "\nMatrica A:\n");
 		printMatrix(&b[0][0], N, M, "\nMatrica B:\n");
 		printMatrix(&c[0][0], K, M, "\nMatrica C:\n");

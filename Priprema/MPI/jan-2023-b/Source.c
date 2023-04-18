@@ -26,13 +26,13 @@ int main(int argc, char** argv) {
 
 	MPI_Datatype studentType;
 
-	const int blockLengths[4] = {1, STRING_SIZE, STRING_SIZE, 1};
+	const int blockLengths[4] = { 1, STRING_SIZE, STRING_SIZE, 1 };
 
 	MPI_Aint displacements[4] = { offsetof(struct student, index),
 								  offsetof(struct student, firstName),
 								  offsetof(struct student, lastName),
 								  offsetof(struct student, avgGrade)
-								};
+	};
 
 	MPI_Datatype types[4] = { MPI_INT, MPI_CHAR, MPI_CHAR, MPI_FLOAT };
 
