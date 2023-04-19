@@ -20,14 +20,14 @@ int main(int argc, char** argv) {
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
 	int a[N][N], b[N], c[N];
-	const int q = (int)sqrt(size); // q predstavlja red velicine matrice procesa
-	const int l = N / q; // l predstavlja broj redova u podmatrici A kao i broj elemenata podvektora B
-	const int k = q + 1; // k predstavlja broj kolona u podmatrici A
+	const int q = (int)sqrt(size), // q predstavlja red velicine matrice procesa
+		l = N / q,// l predstavlja broj redova u podmatrici A kao i broj elemenata podvektora B
+		k = q + 1; // k predstavlja broj kolona u podmatrici A
 
-	int* locA = calloc(l * k, sizeof(int));
-	int* locB = calloc(l, sizeof(int));
-	int* tmp = calloc(l, sizeof(int));
-	int* rowsTmp = calloc(l, sizeof(int));
+	int* locA = calloc(l * k, sizeof(int)),
+		* locB = calloc(l, sizeof(int)),
+		* tmp = calloc(l, sizeof(int)),
+		* rowsTmp = calloc(l, sizeof(int));
 
 	MPI_Datatype submatrixType;
 	MPI_Type_vector(l, k, N, MPI_INT, &submatrixType);

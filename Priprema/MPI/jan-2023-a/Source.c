@@ -8,6 +8,8 @@
 //Potvrdila je asistentkinja Marija da ima dosta grešaka u tekstu zadatka počevši od one formule za
 //broj procesa sa kojima se pokreće program pa do zahteva da se pronađe maksimalni element.
 
+//Ovo ovako ne moze da se pomnozi...
+
 //Traženje max elementa nema svrhe raditi jer se finalna matrica dobija u master procesu, da bi svi procesi učestvovali
 //u traženju maksimalnog elementa matrice potrebno je opet distribuirati blokove po procesima što nema veze s vezom.
 
@@ -53,15 +55,6 @@ int main(int argc, char** argv) {
 	else {
 		MPI_Recv(locA, K * N, MPI_INT, MASTER, DEFAULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		MPI_Recv(locB, K * N, MPI_INT, MASTER, DEFAULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-	}
-
-	initMatrix(&locC[0][0], N, N, 1);
-	for (int q = 0; q < K; q++) {
-		for (int i = 0; i < N; i++)
-			for (int j = 0; j < N; j++) {
-				tmp[i][j] = locB[i][q] * locA[q][j];
-				locC[i][j] += tmp[i][j];
-			}
 	}
 
 	MPI_Reduce(&locC, &c, N * N, MPI_INT, MPI_SUM, MASTER, MPI_COMM_WORLD);
