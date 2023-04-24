@@ -22,9 +22,9 @@ int main(void) {
 
     initProc(a, b, N);
 
-    cout<< "\nResult: ";
+    cout << "\nResult: ";
     for(int i = 0; i < N; i++)
-        cout<< b[i] << " ";
+        cout << b[i] << " ";
 
     return 0;
 }
@@ -39,9 +39,8 @@ __host__ void initProc(int *a, int *b, int len) {
     cudaMalloc(&devB, sizeB);
 
     cudaMemcpy(devA, a, sizeA, cudaMemcpyHostToDevice);
-    cudaMemcpy(devB, b, sizeB, cudaMemcpyHostToDevice);
 
-    kernelProc<<<1, BLOCK_SIZE>>>(devA, devB, len);
+    kernelProc<<<BLOCK_SIZE, BLOCK_SIZE>>>(devA, devB, len);
 
     cudaMemcpy(b, devB, sizeB, cudaMemcpyDeviceToHost);
 
