@@ -3,10 +3,10 @@
 ### Runtime library funkcije
 
 ```cpp
-omp_set_num_threads(num)    //setuje broj niti koji se pokreće.
-omp_get_num_threads()       //vraća broj niti.
-omp_get_thread_num()        //vraća ID niti u timu.
-omp_get_wtime()             //vraća double vrednost koja predstavlja trenutno vreme.
+omp_set_num_threads(num);    //setuje broj niti koji se pokreće.
+omp_get_num_threads();       //vraća broj niti.
+omp_get_thread_num();        //vraća ID niti u timu.
+omp_get_wtime();             //vraća double vrednost koja predstavlja trenutno vreme.
 ```
 
 #### Direktiva parallel se koristi za kreiranje tima niti.

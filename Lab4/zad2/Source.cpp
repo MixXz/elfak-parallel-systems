@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<omp.h>
 
-#define N 2 << 8
+#define N 1 << 12
 
 //Napisati sekvencijalni program kojim se generiše skalarni proizvod dva vektora.Napisati
 //OpenMP program kojim se generiše skalarni proizvod dva vektora, podelom iteracija petlje
@@ -11,17 +11,17 @@
 //Uporediti ova rešenja za različite dimenzije vektora.
 
 int main() {
-	int a[N], b[N], cSec, cPar, cParRedux;
+	int a[N], b[N], cSeq, cPar, cParRedux;
 
 	for (int i = 0; i < N; i++) {
 		a[i] = rand() % 10;
 		b[i] = rand() % 10;
 	}
 
-	cSec = cPar = cParRedux = 0;
+	cSeq = cPar = cParRedux = 0;
 	double startTime = omp_get_wtime();
 	for (int i = 0; i < N; i++) {
-		cSec += a[i] * b[i];
+		cSeq += a[i] * b[i];
 	}
 
 	printf("Vreme potrebno za sekvencijalno izvrsenje: %f\n", omp_get_wtime() - startTime);
@@ -43,5 +43,5 @@ int main() {
 
 	printf("Vreme potrebno za paralelno izvrsenje: %f\n", omp_get_wtime() - startTime);
 
-	printf(cSec == cPar == cParRedux ? "Greska! Rezultati se ne podudaraju.\n" : "Rezultati se podudaraju.\n");
+	printf((cSeq == cPar) && (cSeq == cParRedux) ? "Rezultati se podudaraju.\n" : "Greska! Rezultati se ne podudaraju.\n");
 }
