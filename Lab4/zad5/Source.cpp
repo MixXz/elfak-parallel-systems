@@ -6,6 +6,7 @@
 using namespace std;
 
 #define N 1 << 22
+
 //Napisati OpenMP program kojim se generiše maksimalna vrednost elemanata vektora,
 //podelom iteracija petlje između različitih niti korišćenjem direktive critical za kombinovanje
 //parcijalnih rezultata u nitima.Uporediti vremena izvršenja u oba slučaja sa sekvencijalnim
