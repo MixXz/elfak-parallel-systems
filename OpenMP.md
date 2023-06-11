@@ -1,4 +1,4 @@
-# Cheat sheet
+# Open MP
 
 ### Runtime library funkcije
 

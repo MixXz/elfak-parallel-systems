@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<omp.h>
 
-#define N 8
+#define N 500
 
 //Napisati sekvencijalni program kojim se vrši množenje dve matrice A i B reda N.
 //Korišćenjem OpenMP direktive izvršiti paralelizaciju petlje, tako da se izvrši distribucija
