@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 		buf2[i] = buf2[i + N] = buf[i];
 
 	MPI_Datatype fileType;
-	MPI_Type_vector(2 * N, 2, 2 * N, MPI_CHAR, &fileType);
+	MPI_Type_vector(N, 2, 2 * N, MPI_CHAR, &fileType);
 	MPI_Type_commit(&fileType);
 
 	MPI_Offset disp = 2 * rank * sizeof(char);
