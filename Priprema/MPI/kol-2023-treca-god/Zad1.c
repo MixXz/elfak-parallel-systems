@@ -5,9 +5,9 @@
 #define MASTER 0
 #define P 2
 
-#define K 2
+#define K 4
 #define M 4
-#define L 6
+#define L 4
 
 void printMatrix(int* mat, int rows, int cols, const char* msg);
 
@@ -34,16 +34,8 @@ int main(int argc, char** argv) {
 		printMatrix(&b[0][0], M, L, "Matrica B:\n");
 	}
 
-	int blocklens[K * (M / P)],
-		displacements[K * (M / P)];
-
-	for (int i = 0; i < K * (M / P); i++) {
-		displacements[i] = i * M / P;
-		blocklens[i] = 1;
-	}
-
 	MPI_Datatype sendType;
-	MPI_Type_indexed(K * (M / P), blocklens, displacements, MPI_INT, &sendType);
+	MPI_Type_vector(K * (M / P), 1, M / P, MPI_INT, &sendType);
 	MPI_Type_create_resized(sendType, 0, sizeof(int), &sendType);
 	MPI_Type_commit(&sendType);
 
@@ -88,6 +80,9 @@ int main(int argc, char** argv) {
 		printf("Processs[%d]:\n", rank);
 		printMatrix(&c[0][0], K, L, "C:\n");
 	}
+
+	printf("Processs[%d]:\n", rank);
+	printMatrix(&locA[0][0], K, M - P, "LocA:\n");
 
 	MPI_Finalize();
 	return 1;
