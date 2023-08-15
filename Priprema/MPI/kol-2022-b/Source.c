@@ -2,8 +2,10 @@
 #include<stdlib.h>
 #include<math.h>
 #include<mpi.h>
+
 #define MASTER 0
-#define DEFAULT_TAG 0
+
+#define is_diag_rank(rank, n) (rank % (n + 1) == 0)
 
 int main(int argc, char** argv) {
 	int rank, size;
@@ -12,30 +14,23 @@ int main(int argc, char** argv) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	MPI_Group diagonalGroup, worldGroup;
-	MPI_Comm diagonalComm;
-
 	const int n = (int)sqrt(size);
-	int* members = calloc(n, sizeof(int));
 
-	for (int i = 0; i < n; i++)
-		members[i] = i * (n + 1);
+	MPI_Comm diag_comm;
+	MPI_Comm_split(MPI_COMM_WORLD, is_diag_rank(rank, n), 0, &diag_comm);
 
-	MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
-	MPI_Group_incl(worldGroup, n, members, &diagonalGroup);
-	MPI_Comm_create(MPI_COMM_WORLD, diagonalGroup, &diagonalComm);
+	if (is_diag_rank(rank, n)) {
+		int buff = rank == MASTER;
 
-	int diagonalCommRank;
-	MPI_Group_rank(diagonalGroup, &diagonalCommRank);
+		MPI_Bcast(&buff, 1, MPI_INT, MASTER, diag_comm);
 
-	if (rank % (n + 1) == 0) {
-		int buff = diagonalCommRank == MASTER;
-		MPI_Bcast(&buff, 1, MPI_INT, MASTER, diagonalComm);
+		int diag_rank;
+		MPI_Comm_rank(diag_comm, &diag_rank);
 
-		printf("WorldRank: %d \tDiagonalRank: %d \tReceivedMessage: %d", rank, diagonalCommRank, buff);
+		printf("rank{%d} diag_rank{%d} message: %d\n", rank, diag_rank, buff);
 	}
 
-	free(members);
 	MPI_Finalize();
+
 	return 0;
 }

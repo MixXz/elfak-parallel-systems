@@ -27,7 +27,6 @@ int main(int argc, char** argv) {
 
 	if (rank == MASTER) {
 		initMatrix(&a[0][0], K, N);
-
 		initMatrix(&b[0][0], N, M);
 	}
 
