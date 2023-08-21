@@ -6,8 +6,6 @@ using namespace std;
 #define N 256
 #define THREADS_NUM 8
 
-void printArray(int* arr, const char* message);
-
 int main() {
 
 	int xSeq[N], xPar[N],
@@ -16,7 +14,7 @@ int main() {
 
 	gSeq = gPar = 0;
 	for (int i = 0; i < N; i++) {
-		xSeq[i] = xPar[i] = ySeq[i] = yPar[i] = z[i] = i;
+		xSeq[i] = xPar[i] = ySeq[i] = yPar[i] = z[i] = rand() % 5;
 	}
 
 	for (int i = 1; i < N; i++) {
@@ -39,30 +37,16 @@ int main() {
 			gPar += z[i - 1];
 		}
 	}
-
-	cout << "G: " << gPar << endl;
-	printArray(xPar, "X: ");
-	printArray(yPar, "Y: ");
-
-	int isOk = 1;
 	for (int i = 0; i < N; i++) {
 		if (xSeq[i] != xPar[i]
 			|| ySeq[i] != yPar[i]
 			|| gSeq != gPar) {
-			isOk = 0;
-			break;
+			cout << "Not ok." << endl;
+			return 0;
 		}
 	}
 
-	printf(isOk ? "Ok.\n" : "Not ok.\n");
+	cout << "Ok." << endl;
 
 	return 0;
-}
-
-void printArray(int* arr, const char* message) {
-	cout << message << endl;
-
-	for (int i = 0; i < N; i++)
-		cout << arr[i] << " ";
-	cout << endl;
 }

@@ -11,7 +11,7 @@ int main() {
 		res[N], add[N], xSeq, xPar;
 
 	for (int i = 0; i < N; i++) {
-		sumSeq[i] = sumPar[i] = res[i] = add[i] = i;
+		sumSeq[i] = sumPar[i] = res[i] = add[i] = rand() % 5;
 	}
 
 	for (int i = N - 1; i > 1; i--)
@@ -35,18 +35,14 @@ int main() {
 		}
 	}
 
-	cout << "x: " << xPar << endl;
-
-	int isOk = 1;
 	for (int i = 0; i < N; i++) {
-		if (sumSeq[i] != sumPar[i]) 
-			isOk = 0;		
-		cout << sumPar[i] << " ";
+		if (sumSeq[i] != sumPar[i]) {
+			cout << "Not Ok." << endl;
+			return 0;
+		}
 	}
 
-	cout << endl;
-
-	printf(isOk ? "Ok.\n" : "Not Ok.\n");
+	cout << "Ok." << endl;
 
 	return 0;
 }
