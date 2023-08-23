@@ -57,7 +57,7 @@ __global__ void kernel(int *dev_a, int *dev_b, int *out_c, const char op) {
         i = threadIdx.x + blockIdx.x * blockDim.x;
         psum[threadIdx.x] = dev_a[i] * dev_b[i];
     } else if (op == '+') {
-        i = threadIdx.x + blockIdx.x * (blockDim.x * 2);
+        i = threadIdx.x + blockIdx.x * blockDim.x * 2;
         psum[threadIdx.x] = dev_a[i] + dev_b[i + blockDim.x];
     } else {
         return;
