@@ -84,27 +84,3 @@ __global__ void kernel(float* dev_a, float* out_vec, int* c) {
         out_vec[i] = row_sum;
     }
 }
-
-__global__ void vecAddKernel(float* A_d, float* B_d, float* C_d, int n)
-{
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    float C_loc;
-    __shared__ float avg = 0;
-   
-    if (i < n)
-    {
-        if (i == 0 || i % 256 != 0)
-        {
-            C_loc = A_d[i] + B_d[i];
-            C_d[i] = C_loc;
-            atomicAdd(&avg, C_loc / 255.f);
-        }
-
-
-        __syncthreads();
-
-
-        if (i > 0 && i % 256 == 0)
-            C_d[i] = avg;
-    }
-}
