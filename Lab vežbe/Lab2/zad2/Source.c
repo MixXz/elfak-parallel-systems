@@ -1,6 +1,5 @@
-#include <mpi.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <mpi.h>
 #define N 4
 #define M 3
 #define DIM_COUNT 2
@@ -13,27 +12,25 @@
 //suseda na udaljenosti 2. Smatrati da su procesi u prvoj i poslednjoj koloni jedne vrste susedni.
 
 int main(int argc, char** argv) {
-	int rank, size;
+	int rank;
 
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	MPI_Comm cartComm;
-	int cartRank,
-		dims[DIM_COUNT] = { N, M },
-		periods[DIM_COUNT] = { 1 , 0 },
-		cartCoords[DIM_COUNT],
-		leftNeighbourRank,
-		rightNeighbourRank;
+	const int dims[] = { N, M },
+		periods[] = { 1, 0 };
 
-	MPI_Cart_create(MPI_COMM_WORLD, DIM_COUNT, dims, periods, 1, &cartComm);
-	MPI_Comm_rank(cartComm, &cartRank);
-	MPI_Cart_coords(cartComm, rank, DIM_COUNT, cartCoords);
+	MPI_Comm cart_comm;
+	MPI_Cart_create(MPI_COMM_WORLD, DIM_COUNT, dims, periods, 1, &cart_comm);
 
-	MPI_Cart_shift(cartComm, FIRST_DIM, DISPLACEMENT, &leftNeighbourRank, &rightNeighbourRank);
+	int cart_rank, coords[2];
+	MPI_Comm_rank(cart_comm, &cart_rank);
+	MPI_Cart_coords(cart_comm, rank, DIM_COUNT, coords);
 
-	printf("Rank: %d \tCoords(%d, %d) \t LN rank: %d \t RN rank: %d\n", cartRank, cartCoords[0], cartCoords[1], leftNeighbourRank, rightNeighbourRank);
+	int ln, rn;
+	MPI_Cart_shift(cart_comm, FIRST_DIM, DISPLACEMENT, &ln, &rn);
+
+	printf("Rank: %d \tCoords(%d, %d) \t LN rank: %d \t RN rank: %d\n", cart_rank, coords[0], coords[1], ln, rn);
 
 	MPI_Finalize();
 	return 0;

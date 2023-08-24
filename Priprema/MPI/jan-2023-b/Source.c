@@ -2,40 +2,40 @@
 #include<stdio.h>
 #include<mpi.h>
 #include<stddef.h>
+
 #define MASTER 0
-#define DEFAULT_TAG 0
 #define STUDENTS_COUNT 2
 #define STRING_SIZE 20
 
 //Da ne smara za scanf return value
 #pragma warning( disable : 6031)
 
+struct student {
+	int index;
+	char firstName[STRING_SIZE];
+	char lastName[STRING_SIZE];
+	float avgGrade;
+};
+
 int main(int argc, char** argv) {
-	int rank, size;
+	int rank;
 
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	struct student {
-		int index;
-		char firstName[STRING_SIZE];
-		char lastName[STRING_SIZE];
-		float avgGrade;
-	} students[STUDENTS_COUNT] = { {0, "", "", 0}, {0, "", "", 0} };
-
+	struct student students[STUDENTS_COUNT];
 	MPI_Datatype studentType;
 
-	const int blockLengths[4] = { 1, STRING_SIZE, STRING_SIZE, 1 };
+	const int blockLengths[] = { 1, STRING_SIZE, STRING_SIZE, 1 };
 
-	MPI_Aint displacements[4] = {
+	MPI_Aint displacements[] = {
 		offsetof(struct student, index),
 		offsetof(struct student, firstName),
 		offsetof(struct student, lastName),
 		offsetof(struct student, avgGrade)
 	};
 
-	MPI_Datatype types[4] = { MPI_INT, MPI_CHAR, MPI_CHAR, MPI_FLOAT };
+	MPI_Datatype types[] = { MPI_INT, MPI_CHAR, MPI_CHAR, MPI_FLOAT };
 
 	MPI_Type_create_struct(4, blockLengths, displacements, types, &studentType);
 	MPI_Type_commit(&studentType);

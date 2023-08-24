@@ -2,8 +2,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+
 #define MASTER 0
 #define DEFAULT_TAG 0
+
+#define is_diag(rank, n) (rank % (n + 1) == 0)
 
 //Napisati MPI program koji kreira komunikator koji se sastoji od dijagonalnih procesa u
 //kvadratnoj mreži procesa.Iz master procesa novog komunikatora poslati poruku svim ostalim
@@ -11,42 +14,30 @@
 //procesa u novom komunikatoru i stari identifikator procesa.
 
 int main(int argc, char** argv) {
-    int rank, newRank, size;
-    MPI_Group oldGroup, newGroup;
-    MPI_Comm newComm;
+    int rank, size;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    int n = sqrt(size);
-    int* members = calloc(n, sizeof(int));
+    const int n = (int)sqrt(size);
+    int diag_rank;
+    MPI_Comm diag_comm;
+    
+    MPI_Comm_split(MPI_COMM_WORLD, is_diag(rank, n), 0, &diag_comm);
+    MPI_Comm_rank(diag_comm, &diag_rank);
 
-    for (int i = 0; i < n; i++) 
-        members[i] = i * (n + 1);
+    if (is_diag(rank, n)) {
+        int buff; 
 
-    MPI_Comm_group(MPI_COMM_WORLD, &oldGroup);
-    MPI_Group_incl(oldGroup, n, members, &newGroup);
-    MPI_Comm_create(MPI_COMM_WORLD, newGroup, &newComm);
-
-    MPI_Group_rank(newGroup, &newRank);
-
-    if (rank % (n + 1) == 0) {
-        int buff;
-
-        if (newRank == MASTER) {
+        if (diag_rank == MASTER) {
             buff = 1;
-            for (int i = 1; i < n; i++)
-                MPI_Send(&buff, 1, MPI_INT, i, DEFAULT_TAG, newComm);
         }
-        else
-            MPI_Recv(&buff, 1, MPI_INT, MASTER, DEFAULT_TAG, newComm, MPI_STATUS_IGNORE);
-            
-        printf("Stari rank [%d]\tnovi rank [%d].\n", rank, newRank);
+
+        MPI_Bcast(&buff, 1, MPI_INT, MASTER, diag_comm);
+        printf("Stari rank [%d]\tnovi rank [%d]\t poruka: %d", rank, diag_rank, buff);
     }
 
-    free(members);
     MPI_Finalize();
-
     return 0;
 }
