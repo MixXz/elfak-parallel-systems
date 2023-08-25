@@ -11,6 +11,13 @@
 
 #pragma warning( disable : 6031)
 
+struct employee {
+	int id;
+	char firstName[STRING_SIZE];
+	char lastName[STRING_SIZE];
+	float avgPlata;
+};
+
 int main(int argc, char** argv) {
 	int rank, size;
 
@@ -18,12 +25,7 @@ int main(int argc, char** argv) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	struct employee {
-		int id;
-		char firstName[STRING_SIZE];
-		char lastName[STRING_SIZE];
-		float avgPlata;
-	} employees[N], employeesLoc[N / P];
+	struct employee  employees[N], employeesLoc[N / P];
 
 	if (rank == MASTER) {
 		for (int i = 0; i < N; i++) {
@@ -34,24 +36,20 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	const int blocklens[4] = { 1, STRING_SIZE, STRING_SIZE, 1 };
-	MPI_Aint displacements[4] = {
+	const int blocklens[] = { 1, STRING_SIZE, STRING_SIZE, 1 };
+	MPI_Aint displacements[] = {
 		offsetof(struct employee, id),
 		offsetof(struct employee, firstName),
 		offsetof(struct employee, lastName),
 		offsetof(struct employee, avgPlata)
 	};
-	MPI_Datatype types[4] = { MPI_INT, MPI_CHAR, MPI_CHAR, MPI_FLOAT };
+	MPI_Datatype types[] = { MPI_INT, MPI_CHAR, MPI_CHAR, MPI_FLOAT };
 
-	MPI_Datatype structType, sendType;
+	MPI_Datatype structType;
 	MPI_Type_create_struct(4, blocklens, displacements, types, &structType);
 	MPI_Type_commit(&structType);
 
-	MPI_Type_contiguous(N / P, structType, &sendType);
-	MPI_Type_create_resized(sendType, 0, (N / P) * sizeof(struct employee), &sendType);
-	MPI_Type_commit(&sendType);
-
-	MPI_Scatter(&employees[0], 1, sendType, &employeesLoc[0], N / P, structType, MASTER, MPI_COMM_WORLD);
+	MPI_Scatter(&employees[0], N / P, structType, &employeesLoc[0], N / P, structType, MASTER, MPI_COMM_WORLD);
 
 	int locMinId = -1, minId;
 	float minPlata = INT32_MAX;
